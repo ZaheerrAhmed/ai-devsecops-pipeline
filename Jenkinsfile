@@ -143,7 +143,8 @@ pipeline {
             steps {
                 echo '🧠 Running HuggingFace vulnerability classification...'
                 sh '''
-                    pip install --break-system-packages transformers torch -q
+                    pip install --break-system-packages transformers -q
+                    pip install --break-system-packages torch --index-url https://download.pytorch.org/whl/cpu -q
                     python ai-agents/hf_code_analyzer.py || echo "HF analysis completed"
                 '''
             }
