@@ -125,5 +125,3 @@ python ai-agents/mlflow_logger.py
 
 ---
 
-## Author
-- **Email:** ayeshakram678@gmail.com
