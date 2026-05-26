@@ -5,6 +5,7 @@ pipeline {
         APP_IMAGE = "ai-devsecops-app:${BUILD_NUMBER}"
         SONAR_HOST = "http://sonarqube:9000"
         APP_PORT = "5001"
+        PATH = "/var/jenkins_home/.local/bin:${env.PATH}"
     }
 
     stages {
