@@ -125,8 +125,5 @@ python ai-agents/mlflow_logger.py
 
 ---
 
-## Student
-- **Name:** Ayesha Akram
+## Author
 - **Email:** ayeshakram678@gmail.com
-- **Program:** Diploma in Artificial Intelligence Operations — EduQual Level 6
-- **Institution:** Al-Nafi International College
