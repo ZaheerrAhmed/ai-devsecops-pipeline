@@ -6,6 +6,7 @@ pipeline {
         SONAR_HOST = "http://sonarqube:9000"
         APP_PORT = "5001"
         PATH = "/var/jenkins_home/.local/bin:${env.PATH}"
+        DOCKER_HOST = "tcp://host.docker.internal:2375"
     }
 
     stages {
