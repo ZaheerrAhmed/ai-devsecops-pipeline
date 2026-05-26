@@ -171,13 +171,13 @@ pipeline {
             steps {
                 echo '🔒 Scanning Docker image with Trivy...'
                 sh '''
+                    mkdir -p reports
                     docker run --rm \
-                        -v /var/run/docker.sock:/var/run/docker.sock \
+                        -e DOCKER_HOST=tcp://host.docker.internal:2375 \
                         aquasec/trivy:latest image \
                         --format json \
-                        --output reports/trivy-report.json \
                         --severity HIGH,CRITICAL \
-                        ${APP_IMAGE} || true
+                        ${APP_IMAGE} > reports/trivy-report.json || true
                     echo "Trivy scan complete"
                 '''
             }
@@ -194,7 +194,11 @@ pipeline {
                     docker rm sample-app || true
                     docker run -d \
                         --name sample-app \
-                        --network devsecops \
+                        --network ai-devsecops-pipeline_devsecops \
+                        -p ${APP_PORT}:5001 \
+                        ${APP_IMAGE} || \
+                    docker run -d \
+                        --name sample-app \
                         -p ${APP_PORT}:5001 \
                         ${APP_IMAGE}
                     sleep 5
@@ -211,11 +215,9 @@ pipeline {
                 echo '⚡ Running OWASP ZAP dynamic security scan...'
                 sh '''
                     docker run --rm \
-                        --network devsecops \
-                        -v $(pwd)/reports:/zap/wrk \
                         zaproxy/zap-stable:latest \
                         zap-baseline.py \
-                        -t http://sample-app:5001 \
+                        -t http://host.docker.internal:${APP_PORT} \
                         -J zap-report.json \
                         || true
                     echo "ZAP scan complete"
