@@ -26,8 +26,8 @@ pipeline {
             steps {
                 echo '📦 Installing Python dependencies...'
                 sh '''
-                    pip install -r app/requirements.txt
-                    pip install bandit semgrep pytest pytest-cov
+                    pip install --break-system-packages -r app/requirements.txt
+                    pip install --break-system-packages bandit semgrep pytest pytest-cov
                 '''
             }
         }
@@ -93,7 +93,7 @@ pipeline {
             steps {
                 echo '📋 Running OWASP Dependency Check...'
                 sh '''
-                    pip install safety
+                    pip install --break-system-packages safety
                     safety check \
                         -r app/requirements.txt \
                         --json \
@@ -111,7 +111,7 @@ pipeline {
             steps {
                 echo '📊 Running SonarQube code quality analysis...'
                 sh '''
-                    pip install pysonar-scanner || true
+                    pip install --break-system-packages pysonar-scanner || true
                     sonar-scanner \
                         -Dsonar.projectKey=ai-devsecops-pipeline \
                         -Dsonar.sources=app \
@@ -129,7 +129,7 @@ pipeline {
             steps {
                 echo '🤖 Running AI-powered code review with LangChain...'
                 sh '''
-                    pip install langchain langchain-community ollama -q
+                    pip install --break-system-packages langchain langchain-community ollama -q
                     python ai-agents/code_reviewer.py || echo "AI review completed"
                 '''
             }
@@ -142,7 +142,7 @@ pipeline {
             steps {
                 echo '🧠 Running HuggingFace vulnerability classification...'
                 sh '''
-                    pip install transformers torch -q
+                    pip install --break-system-packages transformers torch -q
                     python ai-agents/hf_code_analyzer.py || echo "HF analysis completed"
                 '''
             }
@@ -239,7 +239,7 @@ pipeline {
             steps {
                 echo '📝 Generating AI documentation with LlamaIndex...'
                 sh '''
-                    pip install llama-index llama-index-llms-ollama -q
+                    pip install --break-system-packages llama-index llama-index-llms-ollama -q
                     python ai-agents/code_indexer.py || echo "Docs generated"
                 '''
             }
@@ -252,7 +252,7 @@ pipeline {
             steps {
                 echo '📊 Logging all AI results to MLflow...'
                 sh '''
-                    pip install mlflow -q
+                    pip install --break-system-packages mlflow -q
                     python ai-agents/mlflow_logger.py || echo "MLflow logging done"
                 '''
             }
