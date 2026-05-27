@@ -172,19 +172,11 @@ pipeline {
                 echo '🔒 Scanning Docker image with Trivy...'
                 sh '''
                     mkdir -p reports
-                    # Download DB into cache if not present (15 min timeout)
-                    docker run --rm \
-                        -v trivy-cache:/root/.cache/trivy \
-                        aquasec/trivy:latest image \
-                        --download-db-only \
-                        --timeout 15m \
-                        || true
-                    # Scan using cached DB
                     docker run --rm \
                         -e DOCKER_HOST=tcp://host.docker.internal:2375 \
                         -v trivy-cache:/root/.cache/trivy \
                         aquasec/trivy:latest image \
-                        --skip-db-update \
+                        --timeout 30m \
                         --format json \
                         --severity HIGH,CRITICAL \
                         ${APP_IMAGE} > reports/trivy-report.json || true
@@ -228,7 +220,6 @@ pipeline {
                         zaproxy/zap-stable:latest \
                         zap-baseline.py \
                         -t http://host.docker.internal:${APP_PORT} \
-                        -J zap-report.json \
                         || true
                     echo "ZAP scan complete"
                 '''
