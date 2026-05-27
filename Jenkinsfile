@@ -112,15 +112,19 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo '📊 Running SonarQube code quality analysis...'
-                sh '''
-                    pip install --break-system-packages pysonar-scanner || true
-                    sonar-scanner \
-                        -Dsonar.projectKey=ai-devsecops-pipeline \
-                        -Dsonar.sources=app \
-                        -Dsonar.host.url=${SONAR_HOST} \
-                        -Dsonar.python.coverage.reportPaths=reports/coverage.xml \
-                        || echo "SonarQube scan attempted"
-                '''
+                script {
+                    def scannerHome = tool 'SonarScanner'
+                    withSonarQubeEnv('SonarQube') {
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                                -Dsonar.projectKey=ai-devsecops-pipeline \
+                                -Dsonar.sources=app \
+                                -Dsonar.host.url=${SONAR_HOST} \
+                                -Dsonar.python.coverage.reportPaths=reports/coverage.xml \
+                                || echo "SonarQube scan attempted"
+                        """
+                    }
+                }
             }
         }
 
