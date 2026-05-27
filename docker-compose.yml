@@ -77,6 +77,7 @@ services:
       --port 5000
       --default-artifact-root /mlflow/artifacts
       --backend-store-uri sqlite:////mlflow/mlflow.db
+      --allowed-hosts "*"
     volumes:
       - mlflow_data:/mlflow
     networks:

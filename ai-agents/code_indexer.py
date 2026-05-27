@@ -24,7 +24,7 @@ def generate_documentation():
         from llama_index.embeddings.huggingface import HuggingFaceEmbedding
     except ImportError:
         print("Installing llama-index...")
-        os.system("pip install llama-index llama-index-llms-ollama llama-index-embeddings-huggingface -q")
+        os.system("pip install --break-system-packages llama-index llama-index-llms-ollama llama-index-embeddings-huggingface -q")
         try:
             from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings
             from llama_index.llms.ollama import Ollama as LlamaOllama
