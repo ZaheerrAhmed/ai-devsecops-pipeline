@@ -29,8 +29,6 @@ def log_all_to_mlflow():
     mlflow_host = os.environ.get('MLFLOW_HOST', 'host.docker.internal')
     tracking_uri = f"http://{mlflow_host}:5000"
     mlflow.set_tracking_uri(tracking_uri)
-    # Route artifact uploads through the MLflow HTTP proxy (--serve-artifacts)
-    os.environ['MLFLOW_ARTIFACT_URI'] = tracking_uri
     mlflow.set_experiment("ai-devsecops-pipeline")
 
     build_number = os.environ.get('BUILD_NUMBER', 'local')
@@ -64,12 +62,10 @@ def log_code_review(mlflow, build_number):
         mlflow.log_param("model", data.get("model", "codellama"))
         mlflow.log_param("build_number", build_number)
         mlflow.log_param("file_reviewed", data.get("file", "app/app.py"))
+        mlflow.log_param("status", data.get("status", "unknown"))
 
         # Metrics (numbers)
         mlflow.log_metric("duration_seconds", data.get("duration_seconds", 0))
-
-        # Artifact (the actual report file)
-        mlflow.log_artifact(report_path)
 
         print("✅ LangChain Code Review logged to MLflow")
 
@@ -98,8 +94,6 @@ def log_hf_analysis(mlflow, build_number):
         mlflow.log_metric("medium_priority", medium_count)
         mlflow.log_metric("low_priority", low_count)
 
-        mlflow.log_artifact(report_path)
-
         print(f"✅ HuggingFace Analysis logged: {high_count} HIGH, {medium_count} MEDIUM, {low_count} LOW")
 
 
@@ -116,8 +110,6 @@ def log_llamaindex(mlflow, build_number):
 
         doc_size = os.path.getsize(docs_path)
         mlflow.log_metric("doc_size_bytes", doc_size)
-
-        mlflow.log_artifact(docs_path)
 
         print(f"✅ LlamaIndex Documentation logged ({doc_size} bytes)")
 
