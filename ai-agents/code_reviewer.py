@@ -32,7 +32,6 @@ def review_code():
     try:
         from langchain_community.llms import Ollama
         from langchain_core.prompts import PromptTemplate
-        from langchain.chains import LLMChain
 
         llm = Ollama(
             model="codellama",
@@ -66,8 +65,9 @@ Respond in JSON format:
         print(f"📝 Reviewing: {code_path}")
         start = time.time()
 
-        chain = LLMChain(llm=llm, prompt=prompt)
-        result = chain.run(code=code)
+        # Use LCEL pipe syntax instead of deprecated LLMChain
+        chain = prompt | llm
+        result = chain.invoke({"code": code})
         duration = time.time() - start
 
         report = {

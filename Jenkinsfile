@@ -174,6 +174,7 @@ pipeline {
                     mkdir -p reports
                     docker run --rm \
                         -e DOCKER_HOST=tcp://host.docker.internal:2375 \
+                        -v trivy-cache:/root/.cache/trivy \
                         aquasec/trivy:latest image \
                         --format json \
                         --severity HIGH,CRITICAL \
