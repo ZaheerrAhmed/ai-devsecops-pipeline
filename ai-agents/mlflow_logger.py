@@ -25,7 +25,9 @@ def log_all_to_mlflow():
         import mlflow
 
     # Connect to MLflow server
-    mlflow.set_tracking_uri("http://localhost:5000")
+    # Use host.docker.internal when running inside Jenkins container
+    mlflow_host = os.environ.get('MLFLOW_HOST', 'host.docker.internal')
+    mlflow.set_tracking_uri(f"http://{mlflow_host}:5000")
     mlflow.set_experiment("ai-devsecops-pipeline")
 
     build_number = os.environ.get('BUILD_NUMBER', 'local')
